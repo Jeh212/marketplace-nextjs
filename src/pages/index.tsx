@@ -1,7 +1,7 @@
 import Image from "next/future/image"
 import { stripeApi } from "../lib/stripe"
 import Link from 'next/link'
-
+import Head from 'next/head'
 import { HomeContainer, Product } from "../styles/pages/home"
 
 import 'keen-slider/keen-slider.min.css'
@@ -30,25 +30,30 @@ export default function Home({ products }: HomeProps) {
     })
 
     return (
+        <>
+            <Head>
+                <title>Product</title>
+            </Head>
+            <HomeContainer ref={sliderRefe} className="keen-slider">
 
-        <HomeContainer ref={sliderRefe} className="keen-slider">
-            {
-                products.map(product => {
-                    return (
-                        <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
-                            <Product className="keen-slider__slide">
-                                <Image src={product.imageUrl} alt={""} width={520} height={400} />
+                {
+                    products.map(product => {
+                        return (
+                            <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
+                                <Product className="keen-slider__slide">
+                                    <Image src={product.imageUrl} alt={""} width={520} height={400} />
 
-                                <footer>
-                                    <strong>{product.name}</strong>
-                                    <span>{product.price}</span>
-                                </footer>
-                            </Product>
-                        </Link>
-                    )
-                })
-            }
-        </HomeContainer>
+                                    <footer>
+                                        <strong>{product.name}</strong>
+                                        <span>{product.price}</span>
+                                    </footer>
+                                </Product>
+                            </Link>
+                        )
+                    })
+                }
+            </HomeContainer>
+        </>
     )
 }
 

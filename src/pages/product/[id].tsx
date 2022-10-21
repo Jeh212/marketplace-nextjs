@@ -8,6 +8,7 @@ import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/p
 import ReactLoading from "react-loading";
 import axios from "axios";
 import { useState } from "react";
+import Head from "next/head";
 
 
 
@@ -63,27 +64,32 @@ export default function Product({ product }: ProductProps) {
 
 
     return (
-        <ProductContainer>
+        <>
+            <Head>
+                <title>{product.name} | Ignite Shop</title>
+            </Head>
+            <ProductContainer>
 
-            <ImageContainer>
-                <Image src={product.imageUrl} width={520} height={480} alt="" />
-            </ImageContainer>
+                <ImageContainer>
+                    <Image src={product.imageUrl} width={520} height={480} alt="" />
+                </ImageContainer>
 
-            <ProductDetails>
-                <h1>{product.name}</h1>
-                <span>{product.price}</span>
-                <p>{product.description}</p>
+                <ProductDetails>
+                    <h1>{product.name}</h1>
+                    <span>{product.price}</span>
+                    <p>{product.description}</p>
 
-                {
-                    !isCreatingCheckoutSession ?
-                        (<button onClick={handleBuyProduct}>Comprar Agora</button>) :
-                        (<ReactLoading type={'bars'} color={'white'} height={60} width={60} />)
+                    {
+                        !isCreatingCheckoutSession ?
+                            (<button onClick={handleBuyProduct}>Comprar Agora</button>) :
+                            (<ReactLoading type={'bars'} color={'white'} height={60} width={60} />)
 
-                }
-            </ProductDetails>
+                    }
+                </ProductDetails>
 
-        </ProductContainer>
+            </ProductContainer>
 
+        </>
 
 
     )
