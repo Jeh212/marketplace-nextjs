@@ -3,9 +3,11 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Image from 'next/future/image'
 import Stripe from "stripe";
-import { stripeApi } from "../../Api/stripe";
+import { stripeApi } from "../../lib/stripe";
 import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/products";
 import ReactLoading from "react-loading";
+import axios from "axios";
+import { useState } from "react";
 
 
 
@@ -15,6 +17,7 @@ interface Product {
     imageUrl: string
     price: string
     description: string
+    defaultPriceId: string;
 }
 
 interface ProductProps {
@@ -22,17 +25,40 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
+    const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false);
+
 
     // O fallback estiver como true, ele vai executar o metodo getStaticProps
     // busca os dados de forma assincrona. Enquanto os novos dados não são carregados,
     // é passado é possivel passar uma tela de loading isFallback do hook useRouter()
-
     const { isFallback } = useRouter();
-
     if (isFallback) {
         return (
             <ReactLoading type={'spinningBubbles'} color={'white'} height={50} width={50} />
         )
+    }
+
+
+    async function handleBuyProduct() {
+        setIsCreatingCheckoutSession(true);
+
+        try {
+            const response = await axios.post('/api/checkout', {
+                priceId: product.defaultPriceId
+            })
+
+            const { checkoutUrl } = response.data;
+
+            window.location.href = checkoutUrl;
+
+
+        } catch (error) {
+            //Conectar com uma ferramente de observabilidade (DataDog / Sentry)
+            setIsCreatingCheckoutSession(false);
+
+        }
+
+
     }
 
 
@@ -47,7 +73,13 @@ export default function Product({ product }: ProductProps) {
                 <h1>{product.name}</h1>
                 <span>{product.price}</span>
                 <p>{product.description}</p>
-                <button>Comprar Agora</button>
+
+                {
+                    !isCreatingCheckoutSession ?
+                        (<button onClick={handleBuyProduct}>Comprar Agora</button>) :
+                        (<ReactLoading type={'bars'} color={'white'} height={60} width={60} />)
+
+                }
             </ProductDetails>
 
         </ProductContainer>
@@ -94,7 +126,9 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
                 name: product.name,
                 imageUrl: product.images[0],
                 price: formatedPrice,
-                description: product.description
+                description: product.description,
+
+                defaultPriceId: price.id
             }
         },
         revalidate: 60 * 60 * 1

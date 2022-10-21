@@ -38,10 +38,12 @@ export const ProductDetails = styled('div', {
     display: 'flex',
     flexDirection: 'column',
 
+
     h1: {
         fontSize: '$2xl',
         color: "$gray300",
     },
+
     span: {
         marginTop: '1rem',
         display: 'block',
@@ -67,6 +69,11 @@ export const ProductDetails = styled('div', {
         fontWeight: 'bold',
         fontSize: '$md',
         height: '4rem',
+
+        '&:disabled': {
+            opacity: 0.6,
+            cursos: 'not-allowed'
+        },
 
         '&:hover': {
             backgroundColor: '$green300"'

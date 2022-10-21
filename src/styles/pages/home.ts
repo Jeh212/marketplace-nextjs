@@ -12,7 +12,7 @@ export const HomeContainer = styled('main', {
 })
 
 
-export const Product = styled('a', {
+export const Product = styled('div', {
     background: 'linear-gradient(180deg, #1ea483 0%, #7465da 100%)',
     borderRadius: 8,
     // padding: '0.25rem',
